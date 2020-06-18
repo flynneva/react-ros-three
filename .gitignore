@@ -4,6 +4,9 @@
 # dependencies
 node_modules
 
+# docs
+docs
+.docz
 # builds
 build
 dist

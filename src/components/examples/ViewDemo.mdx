@@ -10,12 +10,15 @@ The top level component for all your vizualization tools will be the Viewer wind
 Basic properties can be passed in as normal React props such as height and width. Other properties specific to three.js can also be passed in like camera where the user can specify the field of view and position.
 
 import { Playground } from 'docz'
-import ViewDemo from './ViewDemo'
+import { Viewer } from '../Viewer'
+import { Grid } from '../Grid'
 import { ROS } from 'react-ros'
 
 <Playground>
   <ROS>
-    <ViewDemo height="500px"/>
+    <Viewer height="500px" background="black">
+      <Grid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#eeeeee' />
+    </Viewer>
   </ROS>
 </Playground>
 

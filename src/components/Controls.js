@@ -15,7 +15,7 @@ function Controls() {
       ref={controlsRef}
       args={[camera, gl.domElement]}
       enableRotate
-      enablePan={false}
+      enablePan={true}
       maxDistance={200}
       minDistance={0.01}
       minPolarAngle={Math.PI / 6}
