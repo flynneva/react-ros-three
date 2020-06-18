@@ -1,0 +1,22 @@
+---
+name: View Demo
+route: /examples/view_demo/
+menu: Examples
+---
+
+## Getting Started
+The top level component for all your vizualization tools will be the Viewer window. Within this 3D view you can add or remove whatever visualization you'd like...or add your own custom 3D component!
+
+Basic properties can be passed in as normal React props such as height and width. Other properties specific to three.js can also be passed in like camera where the user can specify the field of view and position.
+
+import { Playground } from 'docz'
+import ViewDemo from './ViewDemo'
+import { ROS } from 'react-ros'
+
+<Playground>
+  <ROS>
+    <ViewDemo height="500px"/>
+  </ROS>
+</Playground>
+
+

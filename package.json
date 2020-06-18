@@ -1,10 +1,11 @@
 {
   "name": "react-ros-three",
-  "version": "1.0.0",
-  "description": "Generic tools for visualizing ROS data in 3D",
+  "version": "0.0.0",
+  "description": "Easily add a ROS 3D visualizer to your React website",
   "author": "flynneva",
   "license": "MIT",
   "repository": "flynneva/react-ros-three",
+  "bugs": "https://github.com/flynneva/react-ros-three/issues",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
@@ -19,15 +20,17 @@
     "test:build": "run-s build",
     "test:lint": "eslint .",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
-    "predeploy": "cd example && npm install && npm run build",
-    "deploy": "gh-pages -d example/build"
+    "predeploy": "npm install && npm run docz:build",
+    "deploy": "gh-pages -d docs/",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build",
+    "docz:serve": "docz build && docz serve"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^16.0.0",
+    "react-ros": "^0.0.5"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.10",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
@@ -36,11 +39,12 @@
     "eslint-config-standard-react": "^9.2.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
+    "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react": "^16.13.1",
@@ -49,5 +53,13 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "docz": "^2.3.1",
+    "react-ros": "0.0.6",
+    "react-three-fiber": "^4.2.10",
+    "three": "^0.117.1",
+    "use-cannon": "^0.4.8",
+    "uws": "^10.148.1"
+  }
 }

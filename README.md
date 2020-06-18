@@ -1,7 +1,5 @@
 # react-ros-three
 
-> Generic tools for visualizing ROS data in 3D
-
 [![NPM](https://img.shields.io/npm/v/react-ros-three.svg)](https://www.npmjs.com/package/react-ros-three) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
