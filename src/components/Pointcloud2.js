@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import * as THREE from 'three';
-import { Canvas } from 'react-three-fiber';
-import { Physics } from 'use-cannon';
-import Controls from './Controls';
-
+import React, { useEffect, useState, useContext } from 'react';
 import { useROS }  from 'react-ros';
 
-function PointCloud2(props) {
-  const { listeners, ros } = useROS();
+function Pointcloud2(props) {
+  const { isConnected, listeners, createListener } = useROS();
+
   const [ stat, setStat ] = useState('searching');
   const [ count, setCount ] = useState(0);
-
+  
   useEffect(() => {
     if (stat === 'searching') {
+      if (isConnected) {
+        console.log(listeners);
+        if (listeners == false) {
+          createListener( props.topic,
+                          'sensor_msgs/Pointcloud2',
+                          Number(10),
+                          'cbor-raw' );
+        }
+      } else {
+        console.log('Not connected to ROS websocket');
+      }
+
       for (var listener in listeners) {
         if(listener) {
           if(listeners[listener].compression === 'cbor-raw') {
@@ -42,25 +50,23 @@ function PointCloud2(props) {
     console.log(msg);
   }
 
-  const viewStyle = {
-    height: props.height ? props.height : '500px',
-  }
-
   return (
-   <div style={viewStyle}>
-     <Canvas shadowMap
-             gl={{ alpha: false }}
-             camera={ props.camera ? props.camera : { position: [-1, 1, 2.5], fov: 50 }}
-             onCreated={({ gl, camera, scene }) => {
-               camera.lookAt(0, 0, 0)
-               scene.background = new THREE.Color('white')
-               gl.toneMapping = THREE.ACESFilmicToneMapping
-               gl.outputEncoding = THREE.sRGBEncoding }}>
-       <Controls />
-       <gridHelper />
-     </Canvas>
-   </div>
+    <points>
+      <bufferGeometry attach="geometry">
+        <bufferAttribute
+          attachObject={['attributes', 'position']}
+          count={1}
+          array={[0,0,0]}
+          itemSize={3} />
+        <bufferAttribute
+          attachObject={['attributes', 'color']}
+          count={1}
+          array={[255, 255, 255]}
+          itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial attach="material" vertexColors size={10} sizeAttenuation={false} />
+    </points>
   )
 }
 
-export { Viewer };
+export { Pointcloud2 };

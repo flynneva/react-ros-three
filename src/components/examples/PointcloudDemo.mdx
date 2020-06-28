@@ -1,0 +1,27 @@
+---
+name: Pointcloud Demo
+route: /examples/pointcloud_demo/
+menu: Examples
+---
+
+To add a pointcloud visualization to a Viewer window, simply add it as a child component and specify the settings you would like!
+
+import { Playground } from 'docz'
+import { Viewer } from '../Viewer'
+import { Pointcloud2 } from '../Pointcloud2'
+import { Grid } from '../Grid'
+import { ROS } from 'react-ros'
+
+import ToggleConnect from './ToggleConnect'
+
+<Playground>
+  <ROS>
+    <ToggleConnect />
+    <Viewer height="500px" background="black">
+      <Grid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
+      <Pointcloud2 topic="/" />
+    </Viewer>
+  </ROS>
+</Playground>
+
+

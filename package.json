@@ -1,6 +1,6 @@
 {
   "name": "react-ros-three",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Easily add a ROS 3D visualizer to your React website",
   "author": "flynneva",
   "license": "MIT",
@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-ros": "^0.0.5"
+    "react-ros": "^0.0.7"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -37,7 +37,7 @@
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-config-standard-react": "^9.2.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
@@ -56,10 +56,10 @@
   ],
   "dependencies": {
     "docz": "^2.3.1",
-    "react-ros": "0.0.6",
-    "react-three-fiber": "^4.2.10",
+    "react-ros": "0.0.7",
+    "react-three-fiber": "^4.2.12",
     "three": "^0.117.1",
-    "use-cannon": "^0.4.8",
-    "uws": "^10.148.1"
+    "use-cannon": "^0.4.9",
+    "uws": "10.148.1"
   }
 }
