@@ -20,6 +20,7 @@ function Pointcloud2(props) {
   const max_points = 100000;
   
   const geometry = useRef();
+  const frame = useRef();
 
   const { isConnected, listeners, createListener } = useROS();
   const [ stat, setStat ] = useState('searching');
@@ -62,6 +63,7 @@ function Pointcloud2(props) {
 
       return () => clearTimeout(timeout);
     }
+    console.log(frame);
   }, [count]);
 
   const handleMsg = (msg) => {
@@ -84,8 +86,7 @@ function Pointcloud2(props) {
       var x = msg.fields[0].offset;  // assume x is field 0?
       var y = msg.fields[1].offset;
       var z = msg.fields[2].offset;
-      var i = msg.fields[3].offset;
-      //console.log(i);
+      var intensity = msg.fields[3].offset;
       var offset;
       var tempI = 0;
       var tempPos = [n * 3];
@@ -95,10 +96,10 @@ function Pointcloud2(props) {
         tempPos[3*i  ] = dv.getFloat32(offset+x, littleEndian);
         tempPos[3*i+1] = dv.getFloat32(offset+y, littleEndian);
         tempPos[3*i+2] = dv.getFloat32(offset+z, littleEndian);
-        //tempI = dv.getUint8(offset+i, littleEndian);
-        tempColor[3*i  ] = Math.random();
-        tempColor[3*i+1] = Math.random();
-        tempColor[3*i+2] = Math.random();
+        tempI = dv.getFloat32(offset+intensity, littleEndian);
+        tempColor[3*i  ] = 1 - tempI;
+        tempColor[3*i+1] = tempI;
+        tempColor[3*i+2] = 1 - tempI * tempI;
       }
       
       updatePoints(tempPos, tempColor);
@@ -107,12 +108,10 @@ function Pointcloud2(props) {
 
   const updatePoints = (verticies, colors) => {
     if (verticies.length < positions.length) {
-      
       setPositions(new Float32Array(verticies));
       setColors(new Float32Array(colors));
       geometry.current.attributes.position.needsUpdate = true;
       geometry.current.attributes.color.needsUpdate = true;
-
     }
   }
 
@@ -123,43 +122,46 @@ function Pointcloud2(props) {
   const parseFields = (fields) => {
     for (var field in fields) {
       let dt = pointfield_types[fields[field].datatype];
-       switch(dt) {
-         case pointfield_types[1]: // INT8
-           console.log('int8');
-         case pointfield_types[2]: // UINT8
-           console.log('uint8');
-         case pointfield_types[3]: // INT16
-           console.log('int16');
-         case pointfield_types[4]: // UINT16
-           console.log('uint16');
-         case pointfield_types[5]: // INT32
-           console.log('int32');
-         case pointfield_types[6]: // UINT32
-           console.log('uint32');
-         case pointfield_types[7]: // FLOAT32
-           console.log('float32');
-         case pointfield_types[8]: // FLOAT64
-           console.log('float64');
-       }
+      switch(dt) {
+        case pointfield_types[1]: // INT8
+          console.log('int8');
+        case pointfield_types[2]: // UINT8
+          console.log('uint8');
+        case pointfield_types[3]: // INT16
+          console.log('int16');
+        case pointfield_types[4]: // UINT16
+          console.log('uint16');
+        case pointfield_types[5]: // INT32
+          console.log('int32');
+        case pointfield_types[6]: // UINT32
+          console.log('uint32');
+        case pointfield_types[7]: // FLOAT32
+          //console.log('float32');
+          return
+        case pointfield_types[8]: // FLOAT64
+          //console.log('float64');
+      }
     }
   }
 
   return (
-    <points>
-      <bufferGeometry attach="geometry" ref={geometry}>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3} />
-        <bufferAttribute
-          attachObject={['attributes', 'color']}
-          count={points_colors.length / 3}
-          array={points_colors}
-          itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial attach="material" vertexColors size={0.25} sizeAttenuation={true} />
-    </points>
+    <group ref={frame} rotation={[1.57, 0, 0]}>
+      <points>
+        <bufferGeometry attach="geometry" ref={geometry}>
+          <bufferAttribute
+            attachObject={['attributes', 'position']}
+            count={positions.length / 3}
+            array={positions}
+            itemSize={3} />
+          <bufferAttribute
+            attachObject={['attributes', 'color']}
+            count={points_colors.length / 3}
+            array={points_colors}
+            itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial attach="material" vertexColors size={0.075} sizeAttenuation={true} />
+      </points>
+    </group>
   );
 }
 
