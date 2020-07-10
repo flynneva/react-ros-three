@@ -27,12 +27,16 @@ function Pointcloud2(props) {
   const [ count, setCount ] = useState(0);
   const [ positions, setPositions ] = useState(new Float32Array(max_points * 3));
   const [ points_colors, setColors ] = useState(new Float32Array(max_points * 3));
+  const [ fields, setFields ] = useState([]);
 
   let doUpdate = false;
   let buffer = null;
   let point_ratio = 1;
   let n = 0;
-  let tempPos = [1, 1, 1];
+  let tempPos = [];
+  let tempColor = [];
+
+  const resize_array_right = (array, length, fill_with) => array.concat((new Array(length)).fill(fill_with)).slice(0, length);
 
   useEffect(() => {
     if (stat === 'searching') {
@@ -60,40 +64,44 @@ function Pointcloud2(props) {
         setCount(count + 1);
       }, 1000);
 
-      return () => clearTimeout(timeout);
+      //return () => clearTimeout(timeout);
+    }
+    return function cleanup() {
+      if (isConnected) {
+        if (listeners) {
+          for (var listeners in listeners) {
+            if (listener) {
+              listeners[listener].unsubscribe();
+              setStat('searching');
+            }
+          }
+        }
+      }
     }
   }, [count]);
 
   const handleMsg = (msg) => {
     if(msg.data) {
-      initPoints(msg.header['frame_id'], msg.point_step, msg.fields);
       var buf = max_points * msg.point_step;
       if(msg.data.buffer) {
         buffer = msg.data.slice(0, Math.min(msg.data.byteLength, buf));
         n = Math.min(msg.height * msg.width / point_ratio);
       }
 
-      var dv = new DataView(buffer.buffer);
-      var littleEndian = !msg.is_bigendian;
-      var x = msg.fields[0].offset;  // assume x is field 0?
-      var y = msg.fields[1].offset;
-      var z = msg.fields[2].offset;
-      var intensity = msg.fields[3].offset;
-      var offset;
-      var tempI = 0;
-      var tempPos = [n * 3];
-      var tempColor = [n * 3];
-      for (var i = 0; i < n; i++) {
-        offset = i * point_ratio * msg.point_step;
-        tempPos[3*i  ] = dv.getFloat32(offset+x, littleEndian);
-        tempPos[3*i+1] = dv.getFloat32(offset+y, littleEndian);
-        tempPos[3*i+2] = dv.getFloat32(offset+z, littleEndian);
-        tempI = dv.getFloat32(offset+intensity, littleEndian);
-        tempColor[3*i  ] = 1 - tempI;
-        tempColor[3*i+1] = tempI;
-        tempColor[3*i+2] = 1 - tempI * tempI;
+      if (tempPos.length < n) {
+        resize_array_right(tempPos, n, 0);
+        resize_array_right(tempColor, n, 0);
       }
-      
+
+      var dv = new DataView(buffer.buffer);
+      var little_endian = !msg.is_bigendian;
+      var byte_offset;
+      for (var i = 0; i < n; i++) {
+        for (var f in msg.fields) {
+          byte_offset = i * point_ratio * msg.point_step + Number(msg.fields[f].offset);
+          parseField(Number(3*i)+Number(f), dv, msg.fields[f], byte_offset, f, little_endian);
+        } 
+      }
       updatePoints(tempPos, tempColor);
     }
   }
@@ -102,37 +110,51 @@ function Pointcloud2(props) {
     if (verticies.length < positions.length) {
       setPositions(new Float32Array(verticies));
       setColors(new Float32Array(colors));
-      geometry.current.attributes.position.needsUpdate = true;
-      geometry.current.attributes.color.needsUpdate = true;
+      if (geometry.current) {
+        geometry.current.attributes.position.needsUpdate = true;
+        geometry.current.attributes.color.needsUpdate = true;
+      }
     }
   }
 
-  const initPoints = (frame_id, point_step, fields) => {
-    parseFields(fields);
-  }
-
-  const parseFields = (fields) => {
-    for (var field in fields) {
-      let dt = pointfield_types[fields[field].datatype];
-      switch(dt) {
-        case pointfield_types[1]: // INT8
-          console.log('int8');
-        case pointfield_types[2]: // UINT8
-          console.log('uint8');
-        case pointfield_types[3]: // INT16
-          console.log('int16');
-        case pointfield_types[4]: // UINT16
-          console.log('uint16');
-        case pointfield_types[5]: // INT32
-          console.log('int32');
-        case pointfield_types[6]: // UINT32
-          console.log('uint32');
-        case pointfield_types[7]: // FLOAT32
-          //console.log('float32');
-          return
-        case pointfield_types[8]: // FLOAT64
-          //console.log('float64');
-      }
+  const parseField = (point, dv, field, offset, field_num, little_endian) => {
+    let dt = pointfield_types[field.datatype];
+    switch(dt) {
+      case pointfield_types[1]: // INT8
+        console.log('int8');
+      case pointfield_types[2]: // UINT8
+        console.log('uint8');
+      case pointfield_types[3]: // INT16
+        console.log('int16');
+      case pointfield_types[4]: // UINT16
+        console.log('uint16');
+      case pointfield_types[5]: // INT32
+        console.log('int32');
+        break
+      case pointfield_types[6]: // UINT32
+        console.log('uint32');
+        break
+      case pointfield_types[7]: // FLOAT32
+        if(field_num < 3) {  // assumes first 3 fields will ALWAYS be x, y and z
+          tempPos[point] = dv.getFloat32(offset, little_endian);
+        } else {
+          // TODO(evanflynn): figure out better way to set min/max color range
+          var tempI = dv.getFloat32(offset, little_endian);
+          tempColor[point  ] = 1 - tempI;
+          tempColor[point+1] = tempI;
+          tempColor[point+2] = 1 - tempI * tempI;
+        }
+        break
+      case pointfield_types[8]: // FLOAT64
+        if(field_num < 3) {  // assumes first 3 fields will ALWAYS be x, y and z
+          tempPos[point] = dv.getFloat64(offset, little_endian);
+        } else {
+          var tempI = dv.getFloat64(offset, little_endian);
+          tempColor[point  ] = 1 - tempI;
+          tempColor[point+1] = tempI;
+          tempColor[point+2] = 1 - tempI * tempI;
+        }
+        break
     }
   }
 

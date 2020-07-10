@@ -14,8 +14,9 @@ function Controls() {
     <orbitControls
       ref={controlsRef}
       args={[camera, gl.domElement]}
+      enableKeys
       enableRotate
-      enablePan={true}
+      enablePan
       maxDistance={200}
       minDistance={0.01}
       minPolarAngle={Math.PI / 6}
