@@ -57,13 +57,11 @@ function Pointcloud2(props) {
       }
      
       const timeout = setTimeout(() => {
-        console.log(stat);
         setCount(count + 1);
       }, 1000);
 
       return () => clearTimeout(timeout);
     }
-    console.log(frame);
   }, [count]);
 
   const handleMsg = (msg) => {
@@ -73,12 +71,6 @@ function Pointcloud2(props) {
       if(msg.data.buffer) {
         buffer = msg.data.slice(0, Math.min(msg.data.byteLength, buf));
         n = Math.min(msg.height * msg.width / point_ratio);
-      } else {
-        if (!buffer || buffer.byteLength < buf) {
-	  buffer = new Uint8Array(buf);
-        }
-        n = decode64(msg.data, buffer, msg.point_step, point_ratio);
-        point_ratio = 1;
       }
 
       var dv = new DataView(buffer.buffer);

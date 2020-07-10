@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import * as THREE from 'three';
 import { Canvas } from 'react-three-fiber';
 import { Physics } from 'use-cannon';
@@ -8,10 +8,6 @@ import { ROSProvider, ROSContext }  from 'react-ros';
 
 function Viewer(props) {
   const [ ros, setROS ] = useContext(ROSContext);
-
-  useEffect(() => {
-    console.log(ROSProvider);
-  });
 
   const viewStyle = {
     height: props.height ? props.height : '500px',
