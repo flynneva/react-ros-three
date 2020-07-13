@@ -11,13 +11,13 @@ Basic properties can be passed in as normal React props such as height and width
 
 import { Playground } from 'docz'
 import { Viewer } from '../Viewer'
-import { Grid } from '../Grid'
+import { ViewerGrid } from '../ViewerGrid'
 import { ROS } from 'react-ros'
 
 <Playground>
   <ROS>
     <Viewer height="500px" background="black">
-      <Grid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
+      <ViewerGrid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
     </Viewer>
   </ROS>
 </Playground>

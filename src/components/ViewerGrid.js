@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import * as THREE from 'three';
 
-function Grid(props) {
+function ViewerGrid(props) {
   const [ size, setSize ] = useState(Number(0));
   const [ count, setCount ] = useState(Number(0));
 
@@ -20,4 +20,4 @@ function Grid(props) {
   )
 }
 
-export { Grid };
+export { ViewerGrid };

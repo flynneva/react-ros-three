@@ -9,7 +9,7 @@ To add a pointcloud visualization to a Viewer window, simply add it as a child c
 import { Playground } from 'docz'
 import { Viewer } from '../Viewer'
 import { Pointcloud2 } from '../Pointcloud2'
-import { Grid } from '../Grid'
+import { ViewerGrid } from '../ViewerGrid'
 import { ROS } from 'react-ros'
 
 import ToggleConnect from './ToggleConnect'
@@ -18,7 +18,7 @@ import ToggleConnect from './ToggleConnect'
   <ROS>
     <ToggleConnect />
     <Viewer height="500px" background="black">
-      <Grid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
+      <ViewerGrid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
       <Pointcloud2 topic="/points2" compression="cbor" size={0.1} />
     </Viewer>
   </ROS>
