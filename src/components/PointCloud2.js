@@ -127,18 +127,27 @@ function PointCloud2(props) {
     let dt = pointfield_types[field.datatype];
     switch(dt) {
       case pointfield_types[1]: // INT8
-        console.log('int8');
+        //console.log(field);
+        break
       case pointfield_types[2]: // UINT8
-        console.log('uint8');
+        //console.log(field);
+        break
       case pointfield_types[3]: // INT16
-        console.log('int16');
+        //console.log(field);
+        break
       case pointfield_types[4]: // UINT16
-        console.log('uint16');
+        // TODO(evanflynn): figure out better way to set min/max color range
+        var tempI = dv.getUint16(offset, little_endian) / 2500;
+
+        tempColor[point  ] = tempI;
+        tempColor[point+1] = tempI;
+        tempColor[point+2] = tempI;
+        break
       case pointfield_types[5]: // INT32
-        console.log('int32');
+        //console.log(field);
         break
       case pointfield_types[6]: // UINT32
-        console.log('uint32');
+        //console.log(field);
         break
       case pointfield_types[7]: // FLOAT32
         if(field_num < 3) {  // assumes first 3 fields will ALWAYS be x, y and z
@@ -165,7 +174,7 @@ function PointCloud2(props) {
   }
 
   return (
-    <group ref={frame} rotation={[1.57, 0, 0]}>
+    <group ref={frame} rotation={[-1.57, 0, 0]}>
       <points>
         <bufferGeometry attach="geometry" ref={geometry}>
           <bufferAttribute
