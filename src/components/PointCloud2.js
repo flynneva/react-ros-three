@@ -22,7 +22,7 @@ function PointCloud2(props) {
   const geometry = useRef();
   const frame = useRef();
 
-  const { isConnected, listeners, createListener } = useROS();
+  const { isConnected, listeners, createListener, topics } = useROS();
   const [ stat, setStat ] = useState('searching');
   const [ count, setCount ] = useState(0);
   const [ positions, setPositions ] = useState(new Float32Array(max_points * 3));
@@ -42,43 +42,48 @@ function PointCloud2(props) {
   useEffect(() => {
     if (stat === 'searching') {
       if (isConnected) {
-        if (listeners == false) {
-          // subscribe to given pointcloud topic & set compression method
-          createListener( props.topic,
-                          'sensor_msgs/PointCloud2',
-                          Number(100),
-                          props.compression ? props.compression : 'none');
+        for (var topic in topics) {
+          if (props.topic == topics[topic].path) {
+            // subscribe to given pointcloud topic & set compression method
+            createListener( props.topic,
+                            'sensor_msgs/PointCloud2',
+                            Number(100),
+                            props.compression ? props.compression : 'none');
+            for (var listener in listeners) {
+              if(listener) {
+                listeners[listener].subscribe(handleMsg);
+                setStat('listening');
+              }
+            }
+            break;
+          }
+          if (topic == (topics.length-1)) {
+            console.log("Connected but could not find " + props.topic + " advertised");
+          }
         }
       } else {
         console.log('Not connected to ROS websocket');
-      }
-
-      // if there is a listener available, set the callback and subscribe
-      for (var listener in listeners) {
-        if(listener) {
-          listeners[listener].subscribe(handleMsg);
-          setStat('listening');
-        }
       }
      
       const timeout = setTimeout(() => {
         setCount(count + 1);
       }, 1000);
     }
+    
+    return cleanup();
+  }, [count, isConnected, listeners]);
 
-    return function cleanup() {
-      if (isConnected) {
-        if (listeners) {
-          for (var listeners in listeners) {
-            if (listener) {
-              listeners[listener].unsubscribe();
-              setStat('searching');
-            }
-          }
+  const cleanup = () => {
+    if(!isConnected) {
+      for (var listener in listeners) {
+        if (listeners[listener]) {
+          listeners[listener].unsubscribe();
+          listeners.splice(listener, 1);
+          setStat('searching');
         }
       }
     }
-  }, [count]);
+  }
 
   const handleMsg = (msg) => {
     if(msg.data) {
@@ -107,7 +112,7 @@ function PointCloud2(props) {
   }
 
   const updatePoints = (verticies, colors) => {
-    if (verticies.length < positions.length) {
+    if (verticies.length <= positions.length) {
       setPositions(new Float32Array(verticies));
       setPointColors(new Float32Array(colors));
       setPointSize(props.size);
