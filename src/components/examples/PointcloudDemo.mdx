@@ -19,7 +19,7 @@ import ToggleConnect from './ToggleConnect'
     <ToggleConnect />
     <Viewer height="500px" background="black">
       <Grid cellSize='1' planeCellCount='10' centerLineColor='#ffffff' color='#aaaaaa' />
-      <Pointcloud2 topic="/points2" compression="cbor" />
+      <Pointcloud2 topic="/points2" compression="cbor" size={0.1} />
     </Viewer>
   </ROS>
 </Playground>

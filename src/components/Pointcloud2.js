@@ -26,8 +26,9 @@ function Pointcloud2(props) {
   const [ stat, setStat ] = useState('searching');
   const [ count, setCount ] = useState(0);
   const [ positions, setPositions ] = useState(new Float32Array(max_points * 3));
-  const [ points_colors, setColors ] = useState(new Float32Array(max_points * 3));
+  const [ pointsColors, setPointColors ] = useState(new Float32Array(max_points * 3));
   const [ fields, setFields ] = useState([]);
+  const [ pointSize, setPointSize ] = useState(0);
 
   let doUpdate = false;
   let buffer = null;
@@ -63,9 +64,8 @@ function Pointcloud2(props) {
       const timeout = setTimeout(() => {
         setCount(count + 1);
       }, 1000);
-
-      //return () => clearTimeout(timeout);
     }
+
     return function cleanup() {
       if (isConnected) {
         if (listeners) {
@@ -109,7 +109,8 @@ function Pointcloud2(props) {
   const updatePoints = (verticies, colors) => {
     if (verticies.length < positions.length) {
       setPositions(new Float32Array(verticies));
-      setColors(new Float32Array(colors));
+      setPointColors(new Float32Array(colors));
+      setPointSize(props.size);
       if (geometry.current) {
         geometry.current.attributes.position.needsUpdate = true;
         geometry.current.attributes.color.needsUpdate = true;
@@ -169,11 +170,11 @@ function Pointcloud2(props) {
             itemSize={3} />
           <bufferAttribute
             attachObject={['attributes', 'color']}
-            count={points_colors.length / 3}
-            array={points_colors}
+            count={pointsColors.length / 3}
+            array={pointsColors}
             itemSize={3} />
         </bufferGeometry>
-        <pointsMaterial attach="material" vertexColors size={0.075} sizeAttenuation={true} />
+        <pointsMaterial attach="material" vertexColors size={pointSize} sizeAttenuation={true} />
       </points>
     </group>
   );
