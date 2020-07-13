@@ -16,7 +16,7 @@ const pointfield_types = {
   8: 'FLOAT64'
 }
 
-function Pointcloud2(props) {
+function PointCloud2(props) {
   const max_points = 100000;
   
   const geometry = useRef();
@@ -180,4 +180,4 @@ function Pointcloud2(props) {
   );
 }
 
-export { Pointcloud2 };
+export { PointCloud2 };
