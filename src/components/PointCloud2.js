@@ -18,7 +18,9 @@ const pointfield_types = {
 
 function PointCloud2(props) {
   const max_points = 100000;
-  
+ 
+  const isMounted = useRef(true);
+
   const geometry = useRef();
   const frame = useRef();
 
@@ -75,11 +77,15 @@ function PointCloud2(props) {
 
   const cleanup = () => {
     if(!isConnected) {
-      for (var listener in listeners) {
-        if (listeners[listener]) {
-          listeners[listener].unsubscribe();
-          listeners.splice(listener, 1);
-          setStat('searching');
+      if(stat != 'searching') {
+        isMounted.current = false;
+        for (var listener in listeners) {
+          if (listeners[listener]) {
+            console.log('here');
+            listeners[listener].unsubscribe();
+            listeners.splice(listener, 1);
+            setStat('searching');
+          }
         }
       }
     }
@@ -113,6 +119,7 @@ function PointCloud2(props) {
 
   const updatePoints = (verticies, colors) => {
     if (verticies.length <= positions.length) {
+      if (!isMounted.current) return null
       setPositions(new Float32Array(verticies));
       setPointColors(new Float32Array(colors));
       setPointSize(props.size);
@@ -174,7 +181,7 @@ function PointCloud2(props) {
   }
 
   return (
-    <group ref={frame} rotation={[-1.57, 0, 0]}>
+    <group ref={frame} rotation={props.rotation} position={props.position}>
       <points>
         <bufferGeometry attach="geometry" ref={geometry}>
           <bufferAttribute

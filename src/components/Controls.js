@@ -17,9 +17,10 @@ function Controls() {
       enableKeys
       enableRotate
       enablePan
+      screenSpacePanning={true}
       maxDistance={200}
       minDistance={0.01}
-      minPolarAngle={Math.PI / 6}
+      minPolarAngle={-Math.PI}
       maxPolarAngle={Math.PI}
     />
   );
