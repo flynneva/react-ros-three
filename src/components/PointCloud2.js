@@ -78,10 +78,9 @@ function PointCloud2(props) {
   const cleanup = () => {
     if(!isConnected) {
       if(stat != 'searching') {
-        isMounted.current = false;
+        //isMounted.current = false;
         for (var listener in listeners) {
           if (listeners[listener]) {
-            console.log('here');
             listeners[listener].unsubscribe();
             listeners.splice(listener, 1);
             setStat('searching');
