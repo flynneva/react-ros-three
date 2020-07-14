@@ -1,6 +1,6 @@
 {
   "name": "react-ros-three",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Easily add a ROS 3D visualizer to your React website",
   "author": "flynneva",
   "license": "MIT",
