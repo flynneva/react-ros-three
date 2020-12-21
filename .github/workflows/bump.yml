@@ -1,0 +1,38 @@
+name: Bump, Tag & Publish Release
+on:
+  push:
+    branches: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Setup git config
+        run: |
+          git config user.name "flynneva"
+          git config user.email "<evanflynn.msu@gmail.com>"
+      - name: Install dependencies
+        run: npm install
+      - name: Build Release
+        run: npm run build
+      - name: Bump version and push tag
+        uses: mikeal/merge-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DEPLOY_DIR: .
+          SRC_PACKAGE_DIR: src
+      - name: Get new version
+        id: package
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Create a GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.package.outputs.current-version }}
+          release_name: Release ${{ steps.package.outputs.current-version }}
+          body: ""
