@@ -4,8 +4,24 @@
 
 ## Install
 
+To install the package to an already existing project:
+
 ```bash
 npm install --save react-ros-three
+```
+
+## Build
+
+First, make sure you have npm installed and then clone the repo:
+
+```bash
+git clone https://github.com/flynneva/react-ros-three.git
+```
+
+Once cloned, cd into the directory and install:
+
+```bash
+npm install
 ```
 
 ## Usage
