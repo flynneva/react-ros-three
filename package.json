@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-ros": "^0.0.7"
+    "react-ros": "^0.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -56,7 +56,7 @@
   ],
   "dependencies": {
     "docz": "^2.3.1",
-    "react-ros": "0.0.7",
+    "react-ros": "^0.3.0",
     "react-three-fiber": "^4.2.12",
     "three": "^0.125.0",
     "use-cannon": "^0.4.9",
