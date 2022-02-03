@@ -19,7 +19,7 @@
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
     "test:lint": "eslint .",
-    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:unit": "react-scripts test --transformIgnorePatterns",
     "predeploy": "npm install && npm run docz:build",
     "deploy": "gh-pages -d docs/",
     "docz:dev": "docz dev",
@@ -28,7 +28,7 @@
   },
   "peerDependencies": {
     "react": "^16.0.0",
-    "react-ros": "^0.0.7"
+    "react-ros": "^0.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -56,7 +56,7 @@
   ],
   "dependencies": {
     "docz": "^2.3.1",
-    "react-ros": "0.0.7",
+    "react-ros": "^0.3.0",
     "react-three-fiber": "^4.2.12",
     "three": "^0.137.0",
     "use-cannon": "^0.4.9",
